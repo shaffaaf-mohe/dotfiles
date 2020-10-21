@@ -34,7 +34,7 @@ set nofoldenable
 set wrap
 set inccommand=split
 
-:nmap <space>e :CocCommand explorer<CR>
+:nmap <space>e :NERDTreeToggle<CR>
 :nmap <space>r :registers<CR>
 :vmap <space>r :registers<CR>
 "Custom tabstops
@@ -70,6 +70,7 @@ Plug 'junegunn/fzf.vim'
 Plug 'voldikss/vim-floaterm'
 Plug 'vim-syntastic/syntastic'
 Plug  'tpope/vim-surround'
+Plug 'preservim/nerdtree'
 "Languages
 Plug 'rust-lang/rust.vim'
 Plug 'jiangmiao/auto-pairs'
