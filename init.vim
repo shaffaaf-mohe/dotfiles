@@ -1,6 +1,7 @@
 syntax on
-
-set guicursor=
+:set guicursor=n-v-c:block,i-ci-ve:ver25,r-cr:hor20,o:hor50
+		  \,a:blinkwait700-blinkoff400-blinkon250-Cursor/lCursor
+		  \,sm:block-blinkwait175-blinkoff150-blinkon175
 set noshowmatch
 set mouse=a
 set relativenumber
@@ -11,7 +12,7 @@ set relativenumber
 :augroup END
 
 
-set nohlsearch
+set hlsearch
 set hidden
 set noerrorbells
 set tabstop=4 softtabstop=4
@@ -33,6 +34,9 @@ set nofoldenable
 set wrap
 set inccommand=split
 
+:nmap <space>e :CocCommand explorer<CR>
+:nmap <space>r :registers<CR>
+:vmap <space>r :registers<CR>
 "Custom tabstops
 autocmd FileType vue setlocal tabstop=2 softtabstop=2 shiftwidth=2
 autocmd FileType js setlocal tabstop=2 softtabstop=2 shiftwidth=2
@@ -65,10 +69,12 @@ Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 Plug 'voldikss/vim-floaterm'
 Plug 'vim-syntastic/syntastic'
+Plug  'tpope/vim-surround'
 "Languages
 Plug 'rust-lang/rust.vim'
 Plug 'jiangmiao/auto-pairs'
 Plug 'iloginow/vim-stylus'
+Plug 'tpope/vim-commentary'
 Plug 'OmniSharp/omnisharp-vim'
 "  I AM SO SORRY FOR DOING COLOR SCHEMES IN MY VIMRC, BUT I HAVE
 "  TOOOOOOOOOOOOO
@@ -82,9 +88,29 @@ Plug 'tpope/vim-repeat'
 Plug 'svermeulen/vim-easyclip'
 Plug 'Shougo/neoyank.vim'
 Plug 'Shougo/denite.nvim', { 'do': ':UpdateRemotePlugins' }
+Plug 'justinmk/vim-sneak'
+Plug 'easymotion/vim-easymotion'
 call plug#end()
 
 
+" <Leader>f{char} to move to {char}
+map  <Leader>f <Plug>(easymotion-bd-f)
+nmap <Leader>f <Plug>(easymotion-overwin-f)
+
+" s{char}{char} to move to {char}{char}
+nmap s <Plug>(easymotion-overwin-f2)
+
+" Move to line
+map <Leader>L <Plug>(easymotion-bd-jk)
+nmap <Leader>L <Plug>(easymotion-overwin-line)
+
+" Move to word
+map  <Leader>w <Plug>(easymotion-bd-w)
+nmap <Leader>w <Plug>(easymotion-overwin-w)
+
+
+nnoremap   <silent>   <F12>   :FloatermToggle<CR>
+tnoremap   <silent>   <F12>   <C-\><C-n>:FloatermToggle<CR>
 "easyclip rempaps m to cut so here remapping gm to do m or mark
 nnoremap gm m
 "syntastic stuff
@@ -95,9 +121,10 @@ let g:syntastic_check_on_open = 1
 let g:syntastic_check_on_wq = 0
 let g:syntastic_cs_checkers = ['code_checker']
 
+nnoremap <Leader>n :nohls<CR>
 "omnisharp options
 let g:OmniSharp_server_stdio = 1
-
+let g:OmniSharp_start_without_solution = 1
 
 " fzf window settings
 let g:fzf_layout = {'up':'~90%', 'window': { 'width': 0.8, 'height': 0.8,'yoffset':0.5,'xoffset': 0.5, 'highlight': 'Todo', 'border': 'sharp' } }
@@ -141,7 +168,9 @@ nnoremap L $
 nnoremap H ^
 vnoremap L $
 vnoremap H ^
-noremap ; :
+
+map f <Plug>Sneak_s
+map F <Plug>Sneak_S
 
 let g:netrw_browse_split = 2
 let g:vrfr_rg = 'true'
@@ -155,6 +184,8 @@ nnoremap  <leader>Y  "+yg_
 nnoremap  <leader>y  "+y
 nnoremap  <leader>yy  "+yy
 
+nmap <leader>b :CocList buffers<CR>
+vmap <leader>b :CocList buffers<CR>
 " " Paste from clipboard
 nnoremap <leader>p "+p
 nnoremap <leader>P "+P
@@ -176,12 +207,16 @@ nnoremap <Leader>- :vertical resize -5<CR>
 nnoremap <Leader>ee oif err != nil {<CR>log.Fatalf("%+v\n", err)<CR>}<CR><esc>kkI<esc>
 vnoremap J :m '>+1<CR>gv=gv
 vnoremap K :m '<-2<CR>gv=gv
-vnoremap <C-b> :buffers<CR>
+nnoremap <C-b> :CocList buffers<CR>
 " Vim with me
 nnoremap <leader>vwm :colorscheme gruvbox<bar>:set background=dark<CR>
 nmap <leader>vtm :highlight Pmenu ctermbg=gray guibg=gray
 
-vnoremap X "_d
+nnoremap x d
+vnoremap x d
+nnoremap xx dd
+vnoremap xx dd
+
 inoremap <C-c> <esc>
 
 function! s:check_back_space() abort
@@ -219,6 +254,12 @@ fun! TrimWhitespace()
     keeppatterns %s/\s\+$//e
     call winrestview(l:save)
 endfun
+
+"autocmd FileType typescript setlocal shiftwidth=2 tabstop=2
+autocmd FileType javascript setlocal shiftwidth=2 tabstop=2
+autocmd FileType pug setlocal shiftwidth=2 tabstop=2
+autocmd Filetype typescript setlocal expandtab tabstop=2 shiftwidth=2 softtabstop=2
+
 
 "Denite mappings because of neoyank
 " Define mappings
