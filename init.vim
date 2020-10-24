@@ -81,18 +81,28 @@ Plug 'OmniSharp/omnisharp-vim'
 "  TOOOOOOOOOOOOO
 Plug 'gruvbox-community/gruvbox'
 Plug 'sainnhe/gruvbox-material'
+Plug 'ryanoasis/vim-devicons'
+Plug 'pacha/vem-tabline'
 Plug 'phanviet/vim-monokai-pro'
 Plug 'vim-airline/vim-airline'
 Plug 'flazz/vim-colorschemes'
-Plug 'majutsushi/tagbar'
+"Plug 'majutsushi/tagbar'
 Plug 'tpope/vim-repeat'
 Plug 'svermeulen/vim-easyclip'
 Plug 'Shougo/neoyank.vim'
 Plug 'Shougo/denite.nvim', { 'do': ':UpdateRemotePlugins' }
 Plug 'justinmk/vim-sneak'
 Plug 'easymotion/vim-easymotion'
+" Plug 'hushicai/tagbar-javascript.vim'
+Plug 'preservim/tagbar'
+Plug 'Yggdroot/indentLine'
 call plug#end()
 
+"autosave
+autocmd CursorHold * update
+
+let g:floaterm_width = 0.9
+let g:floaterm_height = 0.8
 
 " <Leader>f{char} to move to {char}
 map  <Leader>f <Plug>(easymotion-bd-f)
@@ -108,7 +118,9 @@ nmap <Leader>L <Plug>(easymotion-overwin-line)
 " Move to word
 map  <Leader>w <Plug>(easymotion-bd-w)
 nmap <Leader>w <Plug>(easymotion-overwin-w)
-
+"
+"icons
+let g:vem_tabline_show_icon = 0
 
 nnoremap   <silent>   <F12>   :FloatermToggle<CR>
 tnoremap   <silent>   <F12>   <C-\><C-n>:FloatermToggle<CR>
@@ -136,7 +148,7 @@ let g:gruvbox_contrast_dark = 'hard'
 
 " --- The Greatest plugin of all time.  I am not bias
 let g:vim_be_good_floating = 1
-
+nmap <F8> :TagbarToggle<CR>
 " --- vim go (polyglot) settings.
 let g:go_highlight_build_constraints = 1
 let g:go_highlight_extra_types = 1
@@ -260,6 +272,7 @@ endfun
 autocmd FileType javascript setlocal shiftwidth=2 tabstop=2
 autocmd FileType pug setlocal shiftwidth=2 tabstop=2
 autocmd Filetype typescript setlocal expandtab tabstop=2 shiftwidth=2 softtabstop=2
+autocmd Filetype vue setlocal expandtab tabstop=2 shiftwidth=2 softtabstop=2
 
 
 "Denite mappings because of neoyank
