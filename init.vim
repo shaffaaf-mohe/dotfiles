@@ -15,7 +15,9 @@ let mapleader = " "
 augroup CursorLine
   au!
   au VimEnter,WinEnter,BufWinEnter * setlocal cursorline
+  au VimEnter,WinEnter,BufWinEnter * setlocal cursorcolumn
   au WinLeave * setlocal nocursorline
+  au WinLeave * setlocal nocursorcolumn
 augroup END
 
 augroup highlight_yank
@@ -472,8 +474,14 @@ require('telescope').load_extension('ultisnips')
 require'telescope'.load_extension('project')
 require('telescope').setup {
   defaults ={
-    file_ignore_patterns = {'.png', '.jpeg', '.svg', '.jpg'},
+    file_ignore_patterns = {'.png', '.jpeg', '.svg', '.jpg', 'tags', 'pdf'},
     borderchars = {"─", "│", "─", "│", "┌", "┐", "┘", "└"},
+    layout_strategy = "vertical",
+    layout_defaults = {
+      vertical = {
+        preview_height = 50,
+      },
+    },
     extensions = {
       frecency = {
         workspaces = {
