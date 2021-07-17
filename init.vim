@@ -61,7 +61,8 @@ set exrc
 set secure
 
 
-:nmap <leader>e :NERDTreeToggle<CR>
+" :nmap <leader>e :NERDTreeToggle<CR>
+:nmap <leader>e :NvimTreeToggle<CR>
 :nmap <space>r :registers<CR>
 :vmap <space>r :registers<CR>
 "Custom tabstops
@@ -98,6 +99,7 @@ command! Bdi :call DeleteInactiveBufs()
 "jump between errors
 nnoremap [l :lprev<CR>
 nnoremap ]l :lnext<CR>
+
 "remap insert mode alt key and arrow keys
 inoremap <M-h> <Left>
 inoremap <M-j> <Down>
@@ -132,6 +134,7 @@ call plug#begin('~/.config/nvim/plugged')
 Plug 'dkprice/vim-easygrep'
 " Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'tpope/vim-fugitive'
+Plug 'kdheepak/lazygit.nvim'
 Plug 'vim-utils/vim-man'
 Plug 'mbbill/undotree'
 Plug 'sheerun/vim-polyglot'
@@ -190,6 +193,7 @@ Plug 'puremourning/vimspector'
 Plug 'szw/vim-maximizer'
 Plug 'eliba2/vim-node-inspect'
 Plug 'kyazdani42/nvim-web-devicons'
+Plug 'kyazdani42/nvim-tree.lua'
 " Plug 'romgrk/barbar.nvim'
 " Plug 'zefei/vim-wintabs'
 "
@@ -351,10 +355,13 @@ function! Get_visual_selection()
   " execute ":%s/".selection."/".change."/g"
 endfunction
 
+let g:lazygit_floating_window_corner_chars = ['┌', '┐', '└', '┘'] " customize lazygit popup window corner characters
+
 nnoremap   <silent>   <F12>   :FloatermToggle<CR>
 tnoremap   <silent>   <F12>   <C-\><C-n>:FloatermToggle<CR>
-nnoremap   <silent>   <F8>   :FloatermNew lazygit<CR>
-tnoremap   <silent>   <F8>   <C-\><C-n>:FloatermToggle<CR>
+" nnoremap   <silent>   <F8>   :FloatermNew lazygit<CR>
+nnoremap   <silent>   <F8>   :LazyGit<CR>
+" tnoremap   <silent>   <F8>   <C-\><C-n>:FloatermToggle<CR>
 nnoremap   <silent>   <F7>   :Ag<CR>
 nnoremap   <silent>   <F7>   :Ag<CR>
 vnoremap    <expr>   <F7>Get_visual_selection()<CR>
@@ -375,7 +382,6 @@ let g:airline#extensions#tabline#enabled = 0
 let g:airline_theme='base16_gruvbox_dark_hard'
 
 let g:gruvbox_contrast_dark = 'hard'
-
 " --- The Greatest plugin of all time.  I am not bias
 let g:vim_be_good_floating = 1
 nmap <F2> :TagbarToggle<CR>
@@ -603,6 +609,12 @@ vim.g.symbols_outline = {
     },
     lsp_blacklist = {},
 }
+
+local chadtree_settings = {
+  ["theme.text_colour_set"] = "nerdtree_syntax_dark"
+}
+vim.api.nvim_set_var("chadtree_settings", chadtree_settings)
+
 EOF
 
 nmap <Leader>s :SymbolsOutline<CR>
@@ -854,6 +866,7 @@ require'nvim-treesitter.configs'.setup {
     disable = {"vue", "pug"},
   },
 }
+print('Hello from lua')
 EOF
 
 let g:UltiSnipsExpandTrigger='<c-l>'
