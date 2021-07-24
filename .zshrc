@@ -32,3 +32,7 @@ antigen theme ys
 
 # Tell Antigen that you're done.
 antigen apply
+
+alias cls="clear"
+alias cat="bat"
+alias ls="exa"
