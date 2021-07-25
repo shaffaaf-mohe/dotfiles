@@ -62,7 +62,8 @@ set secure
 
 
 " :nmap <leader>e :NERDTreeToggle<CR>
-:nmap <leader>e :NvimTreeToggle<CR>
+" :nmap <leader>e :NvimTreeToggle<CR>
+:nmap <leader>e :CHADopen<CR>
 :nmap <space>r :registers<CR>
 :vmap <space>r :registers<CR>
 "Custom tabstops
@@ -139,13 +140,14 @@ Plug 'vim-utils/vim-man'
 Plug 'mbbill/undotree'
 Plug 'sheerun/vim-polyglot'
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+Plug 'ThePrimeagen/refactoring.nvim'
 " Plug 'dyng/ctrlsf.vim'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 " Plug 'justinhoward/fzf-neoyank'
-Plug 'voldikss/vim-floaterm'
+" Plug 'voldikss/vim-floaterm'
 Plug 'tpope/vim-surround'
-Plug 'preservim/nerdtree'
+" Plug 'preservim/nerdtree'
 Plug 'ms-jpq/chadtree'
 "Languages
 Plug 'rust-lang/rust.vim'
@@ -167,7 +169,7 @@ Plug 'flazz/vim-colorschemes'
 Plug 'tpope/vim-repeat'
 Plug 'svermeulen/vim-easyclip'
 Plug 'Shougo/neoyank.vim'
-Plug 'Shougo/denite.nvim', { 'do': ':UpdateRemotePlugins' }
+" Plug 'Shougo/denite.nvim', { 'do': ':UpdateRemotePlugins' }
 Plug 'easymotion/vim-easymotion'
 Plug 'justinmk/vim-sneak'
 " Plug 'rhysd/clever-f.vim'
@@ -193,7 +195,7 @@ Plug 'puremourning/vimspector'
 Plug 'szw/vim-maximizer'
 Plug 'eliba2/vim-node-inspect'
 Plug 'kyazdani42/nvim-web-devicons'
-Plug 'kyazdani42/nvim-tree.lua'
+" Plug 'kyazdani42/nvim-tree.lua'
 " Plug 'romgrk/barbar.nvim'
 " Plug 'zefei/vim-wintabs'
 "
@@ -311,8 +313,8 @@ let g:highlightedyank_highlight_duration = -1
 " autocmd CursorHold * update
 nmap <C-s> :w<CR>
 
-let g:floaterm_width = 0.9
-let g:floaterm_height = 0.8
+" let g:floaterm_width = 0.9
+" let g:floaterm_height = 0.8
 
 " <Leader>f{char} to move to {char}
 map  <Leader>f <Plug>(easymotion-bd-f)
@@ -478,6 +480,7 @@ lua << EOF
 require"telescope".load_extension("frecency")
 require('telescope').load_extension('ultisnips')
 require'telescope'.load_extension('project')
+require('telescope').load_extension('session_manager')
 require('telescope').setup {
   defaults ={
     file_ignore_patterns = {'.png', '.jpeg', '.svg', '.jpg', 'tags', 'pdf'},
@@ -577,6 +580,7 @@ require'compe'.setup {
 local t = function(str)
   return vim.api.nvim_replace_termcodes(str, true, true, true)
 end
+
 _G.s_tab_complete = function()
   if vim.fn.pumvisible() == 1 then
     return t "<C-p>"
@@ -665,9 +669,11 @@ nnoremap <Leader>ps :Rg<CR>
 nnoremap <C-p> :Files<CR>
 nnoremap <C-y> :Buffers<CR>
 nnoremap <Leader>pf :Files<CR>
-nnoremap <Leader><CR> :so ~/.config/nvim/init.vim<CR>
+nnoremap <Leader>so :so ~/.config/nvim/init.vim<CR>
 nnoremap <Leader>+ :vertical resize +5<CR>
 nnoremap <Leader>- :vertical resize -5<CR>
+nnoremap <Leader>0 :resize +5<CR>
+nnoremap <Leader>9 :resize -5<CR>
 nnoremap <Leader>ee oif err != nil {<CR>log.Fatalf("%+v\n", err)<CR>}<CR><esc>kkI<esc>
 vnoremap J :m '>+1<CR>gv=gv
 vnoremap K :m '<-2<CR>gv=gv
@@ -735,8 +741,8 @@ autocmd FileType pug setlocal commentstring=//-\ %s
 noremap ydp :let @+=expand("%:p")<CR>
 
 " Tab and Shift-Tab in normal mode to navigate buffers
-map <Tab> :BufMRUNext<CR>
-map <S-Tab> :BufMRUPrev<CR>
+:nmap <Tab> :BufMRUNext<CR>
+:nmap <S-Tab> :BufMRUPrev<CR>
 
 "Denite mappings because of neoyank
 " Define mappings
@@ -818,7 +824,9 @@ command! -bang -complete=buffer -nargs=? Bclose call <SID>Bclose(<q-bang>, <q-ar
 nnoremap <silent> <Leader>bd :Bclose<CR>
 
 "Tabularize
-autocmd VimEnter * :AddTabularPattern object /^.\{-}:
+autocmd VimEnter * :AddTabularPattern object /^.\{-}:/l0
+autocmd VimEnter * :AddTabularPattern charAfterComma /,\zs/l0
+autocmd VimEnter * :AddTabularPattern charAfterCommaSpace /, \zs/l0
 
 autocmd BufWritePre * :call TrimWhitespace()
 
