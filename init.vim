@@ -6,11 +6,13 @@ set noshowmatch
 set mouse=a
 set relativenumber
 let mapleader = " "
-:augroup numbertoggle
-:  autocmd!
-:  autocmd BufEnter,FocusGained,InsertLeave * set relativenumber
-:  autocmd BufLeave,FocusLost,InsertEnter   * set norelativenumber
-:augroup END
+set number
+
+augroup numbertoggle
+  autocmd!
+  autocmd BufEnter,FocusGained,InsertLeave * setlocal relativenumber
+  autocmd BufLeave,FocusLost,InsertEnter   * setlocal norelativenumber
+augroup END
 
 augroup CursorLine
   au!
@@ -73,6 +75,44 @@ let NERDTreeShowHidden=1
 "Switching buffers
 " :nnoremap <Tab> :bnext<CR>
 " :nnoremap <S-Tab> :bprevious<CR>
+
+"Keep cursor centered on next
+nnoremap n nzzzv
+nnoremap N Nzzzv
+nnoremap J mzJ`z
+nnoremap K a<CR><Esc>
+
+"Undo break points
+inoremap , ,<c-g>u
+inoremap ( (<c-g>u
+inoremap [ [<c-g>u
+inoremap ' '<c-g>u
+inoremap " "<c-g>u
+inoremap . .<c-g>u
+inoremap ! !<c-g>u
+inoremap ? ?<c-g>u
+
+"jumplist mutations
+nnoremap <expr> k (v:count > 5 ? "m'" . v:count : "") . 'k'
+nnoremap <expr> j (v:count > 5 ? "m'" . v:count : "") . 'j'
+
+
+"moving text
+vnoremap J :m '>+1<CR>gv=gv
+vnoremap K :m '<-2<CR>gv=gv
+" this one is commented because i use this for ultisnips
+" inoremap <C-j> <esc>:m .+1<CR>==
+" inoremap <C-k> <esc>:m .-2<CR>==
+nnoremap <leader>k :m .-2<CR>==
+nnoremap <leader>j :m .+1<CR>==
+
+"asdf
+function! BreakHere()
+  s/^\(\s*\)\(.\{-}\)\(\s*\)\(\%#\)\(\s*\)\(.*\)/\1\2\r\1\4\6
+  call histdel("/", -1)
+endfunction
+
+nnoremap <leader>b :<C-u>call BreakHere()<CR>
 
 nnoremap <esc> <esc>
 "close inactive buffers
@@ -221,7 +261,6 @@ Plug 'tami5/sql.nvim'
 Plug 'nvim-telescope/telescope-frecency.nvim'
 Plug 'fhill2/telescope-ultisnips.nvim'
 Plug 'nvim-telescope/telescope-project.nvim'
-
 " nvim lsp stuff
 Plug 'neovim/nvim-lspconfig'
 Plug 'kabouzeid/nvim-lspinstall'
@@ -233,11 +272,32 @@ Plug 'kabouzeid/nvim-lspinstall'
 Plug 'hrsh7th/nvim-compe'
 Plug 'simrat39/symbols-outline.nvim'
 Plug 'ray-x/lsp_signature.nvim'
+
+"Close buffers
+Plug 'kazhala/close-buffers.nvim'
+" Plug 'gelguy/wilder.nvim'
 call plug#end()
 
 
+"Wilder options
+" call wilder#enable_cmdline_enter()
+" set wildcharm=<Tab>
+" cmap <expr> <Tab> wilder#in_context() ? wilder#next() : "\<Tab>"
+" cmap <expr> <S-Tab> wilder#in_context() ? wilder#previous() : "\<S-Tab>"
 
-
+" " only / and ? are enabled by default
+" call wilder#set_option('modes', ['/', '?', ':'])
+" call wilder#set_option('pipeline', [
+"       \   wilder#branch(
+"       \     wilder#python_file_finder_pipeline({
+"       \       'file_command': ['find', '.', '-type', 'f', '-printf', '%P\n'],
+"       \       'dir_command': ['find', '.', '-type', 'd', '-printf', '%P\n'],
+"       \       'filters': ['fuzzy_filter', 'difflib_sorter'],
+"       \     }),
+"       \     wilder#cmdline_pipeline(),
+"       \     wilder#python_search_pipeline(),
+"       \   ),
+"       \ ])
 
 " LSP config (the mappings used in the default file don't quite work right)
 "
@@ -472,7 +532,8 @@ set shortmess+=c
 
 vmap > >gv
 vmap < <gv
-
+" reselect pasted text
+nnoremap gp `[v`]
 
 " inoremap <silent><expr> <CR>      compe#confirm('<C-l>')
 
@@ -501,12 +562,19 @@ require('telescope').setup {
         }
       },
       project = {
-        base_dir = '~/Code',
-        max_depth = 2
+        base_dirs = {
+          { path = '~/Code/coconet', max_depth = 3 },
+        },
       }
     },
   }
 }
+vim.api.nvim_set_keymap(
+    'n',
+    '<F1>',
+    ":lua require'telescope'.extensions.project.project{}<CR>",
+    {noremap = true, silent = true}
+)
 require('lualine').setup {
   options = {theme = 'gruvbox'}
 }
@@ -524,6 +592,9 @@ require'lspconfig'.omnisharp.setup{
   on_attach = function(client)
     require'lsp_signature'.on_attach()
   end,
+}
+require'lspconfig'.dartls.setup{
+  cmd = { "dart", "/opt/dart-sdk/bin/snapshots/analysis_server.dart.snapshot", "--lsp" },
 }
 
 require'lspinstall'.setup() -- important
@@ -675,8 +746,6 @@ nnoremap <Leader>- :vertical resize -5<CR>
 nnoremap <Leader>0 :resize +5<CR>
 nnoremap <Leader>9 :resize -5<CR>
 nnoremap <Leader>ee oif err != nil {<CR>log.Fatalf("%+v\n", err)<CR>}<CR><esc>kkI<esc>
-vnoremap J :m '>+1<CR>gv=gv
-vnoremap K :m '<-2<CR>gv=gv
 " nnoremap <C-b> :Buffers<CR>
 " Vim with me
 nnoremap <leader>vwm :colorscheme gruvbox<bar>:set background=dark<CR>
@@ -871,7 +940,7 @@ require'nvim-treesitter.configs'.setup {
   },
   indent = {
     enable = true,
-    disable = {"vue", "pug"},
+    disable = {"vue", "pug", "dartls"},
   },
 }
 print('Hello from lua')
@@ -882,3 +951,13 @@ let g:UltiSnipsExpandTrigger='<c-l>'
 let g:UltiSnipsJumpForwardTrigger='<c-j>'
 " shortcut to go to previous position
 let g:UltiSnipsJumpBackwardTrigger='<c-k>'
+
+if exists('g:neoray')
+  set guifont=Delugia:h9
+  let neoray_cursor_animation_time=0.07
+  let neoray_popup_menu_enabled=0
+  let neoray_window_startup_state='centered'
+  let neoray_key_toggle_fullscreen='<M-C-CR>' " AltGr+Enter
+  let neoray_key_increase_fontsize='<C-PageUp>'
+  let neoray_key_decrease_fontsize='<C-PageDown>'
+endif
