@@ -170,6 +170,8 @@ set shortmess+=c
 " ale wants this before Plugins
 " let g:ale_disable_lsp = 1
 
+let g:polyglot_disabled = ['markdown','c_sharp', 'cs', 'ts', 'typescript', 'javascript', 'js']
+
 call plug#begin('~/.config/nvim/plugged')
 
 Plug 'dkprice/vim-easygrep'
@@ -216,7 +218,7 @@ Plug 'justinmk/vim-sneak'
 " Plug 'hushicai/tagbar-javascript.vim'
 Plug 'godlygeek/tabular'
 Plug 'preservim/tagbar'
-Plug 'Yggdroot/indentLine'
+" Plug 'Yggdroot/indentLine'
 Plug 'lukas-reineke/indent-blankline.nvim'
 Plug 'inkarkat/vim-ReplaceWithRegister'
 Plug 'tpope/vim-abolish'
@@ -277,7 +279,7 @@ Plug 'ray-x/lsp_signature.nvim'
 Plug 'kazhala/close-buffers.nvim'
 " Plug 'gelguy/wilder.nvim'
 call plug#end()
-
+let g:indentLine_char_list = ['┊']
 
 "Wilder options
 " call wilder#enable_cmdline_enter()
@@ -449,7 +451,6 @@ let g:vim_be_good_floating = 1
 nmap <F2> :TagbarToggle<CR>
 
 
-let g:polyglot_disabled = ['markdown','c_sharp', 'cs', 'ts', 'typescript', 'javascript', 'js']
 " --- vim go (polyglot) settings.
 let g:go_highlight_build_constraints = 1
 let g:go_highlight_extra_types = 1
@@ -547,7 +548,7 @@ require('telescope').setup {
     file_ignore_patterns = {'.png', '.jpeg', '.svg', '.jpg', 'tags', 'pdf'},
     borderchars = {"─", "│", "─", "│", "┌", "┐", "┘", "└"},
     layout_strategy = "vertical",
-    layout_defaults = {
+    layout_config = {
       vertical = {
         preview_height = 50,
       },
