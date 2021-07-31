@@ -19,6 +19,7 @@ antigen bundle heroku
 antigen bundle pip
 antigen bundle lein
 antigen bundle bgnotify
+antigen bundle asdf
 antigen bundle command-not-found
 antigen bundle zsh-users/zsh-completions
 antigen bundle hlissner/zsh-autopair
@@ -36,3 +37,21 @@ antigen apply
 alias cls="clear"
 alias cat="bat"
 alias ls="exa"
+alias vim="nvim"
+alias kilall="killall"
+alias killal="killal"
+#
+# set JAVA_HOME on every change directory
+function asdf_update_java_home {
+  asdf current java 2>&1 > /dev/null
+  if [[ "$?" -eq 0 ]]
+  then
+      export JAVA_HOME=$(asdf where java)
+  fi
+}
+
+precmd() { asdf_update_java_home; }
+# end set JAVA_HOME
+
+# Pathing
+. /opt/asdf-vm/asdf.sh
