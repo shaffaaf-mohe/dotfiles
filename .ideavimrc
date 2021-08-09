@@ -1,6 +1,12 @@
 set relativenumber
 set mouse=a
 
+set easymotion
+set NERDTree
+set surround
+set ReplaceWithRegister
+set highlightedyank
+
 let mapleader = " "
 
 nnoremap L $
@@ -24,6 +30,7 @@ vnoremap <leader>P "+P
 
 nnoremap ,s :action FileStructurePopup<CR>
 nnoremap ,p :action SearchEverywhere<CR>
+nnoremap <C-p> :action SearchEverywhere<CR>
 
 nnoremap U :action FindUsages<CR>
 nnoremap R :action RenameElement<CR>
@@ -38,3 +45,19 @@ nnoremap <C-CR> :action ShowIntentionActions<CR>
 
 nnoremap ,a :action GotoAction<CR>
 vnoremap ,a :action GotoAction<CR>
+
+nnoremap d "_d
+
+nnoremap x d
+vnoremap x d
+nnoremap xx dd
+vnoremap xx dd
+
+inoremap <M-j> <Down>
+inoremap <M-k> <Up>
+inoremap <M-l> <Right>
+inoremap <M-h> <Left>
+
+nmap <C-s> :w<CR>
+
+ let g:highlightedyank_highlight_duration = "-1"
