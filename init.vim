@@ -7,6 +7,7 @@ set mouse=a
 set relativenumber
 let mapleader = " "
 set number
+set title
 
 augroup numbertoggle
   autocmd!
@@ -27,6 +28,13 @@ augroup highlight_yank
     autocmd TextYankPost * silent! lua require'vim.highlight'.on_yank("IncSearch", 1000)
 augroup END
 
+if has('title') && (has('gui_running') || &title)
+    set titlestring=
+    set titlestring+=%f\                                              " file name
+    set titlestring+=%h%m%r%w                                         " flags
+    set titlestring+=\ -\ %{v:progname}                               " program name
+    set titlestring+=\ -\ %{substitute(getcwd(),\ $HOME,\ '~',\ '')}  " working directory
+endif
 
 set hlsearch
 set hidden
@@ -61,7 +69,7 @@ set showbreak=\ \\_
 set updatetime=300
 set exrc
 set secure
-
+set number
 
 " :nmap <leader>e :NERDTreeToggle<CR>
 " :nmap <leader>e :NvimTreeToggle<CR>
@@ -96,7 +104,9 @@ inoremap ? ?<c-g>u
 nnoremap <expr> k (v:count > 5 ? "m'" . v:count : "") . 'k'
 nnoremap <expr> j (v:count > 5 ? "m'" . v:count : "") . 'j'
 
-
+"move to next desired location
+inoremap <silent> jj <c-o>:call search('}\\|)\\|]\\|>', 'cW')<cr><Right>
+" inoremap <silent> jj<c-o> getline('.')[col('.')-1] =~? '[]>)}]' || getline('.')[col('.')-1] =~? '[''"`]' && synIDattr(synID(line("."), col(".")+1, 1), "name") !~? 'string'
 "moving text
 vnoremap J :m '>+1<CR>gv=gv
 vnoremap K :m '<-2<CR>gv=gv
@@ -191,6 +201,7 @@ Plug 'junegunn/fzf.vim'
 Plug 'tpope/vim-surround'
 " Plug 'preservim/nerdtree'
 Plug 'ms-jpq/chadtree'
+Plug 'tommcdo/vim-exchange'
 "Languages
 Plug 'rust-lang/rust.vim'
 Plug 'jiangmiao/auto-pairs'
@@ -198,24 +209,30 @@ Plug 'iloginow/vim-stylus'
 Plug 'tpope/vim-commentary'
 "  I AM SO SORRY FOR DOING COLOR SCHEMES IN MY VIMRC, BUT I HAVE
 "  TOOOOOOOOOOOOO
-Plug 'gruvbox-community/gruvbox'
-Plug 'sainnhe/gruvbox-material'
+" Plug 'gruvbox-community/gruvbox'
+" Plug 'sainnhe/gruvbox-material'
+" Plug 'rktjmp/lush.nvim'
+" Plug 'npxbr/gruvbox.nvim'
+Plug 'Murtaza-Udaipurwala/gruvqueen'
 Plug 'ryanoasis/vim-devicons'
 " Plug 'pacha/vem-tabline'
 Plug 'machakann/vim-highlightedyank'
-Plug 'phanviet/vim-monokai-pro'
+" Plug 'phanviet/vim-monokai-pro'
 Plug 'hoob3rt/lualine.nvim'
+" Plug 'vim-airline/vim-airline'
+" Plug 'vim-airline/vim-airline-themes'
 Plug 'airblade/vim-gitgutter'
-Plug 'flazz/vim-colorschemes'
+" Plug 'flazz/vim-colorschemes'
 "Plug 'majutsushi/tagbar'
 Plug 'tpope/vim-repeat'
 Plug 'svermeulen/vim-easyclip'
 Plug 'Shougo/neoyank.vim'
 " Plug 'Shougo/denite.nvim', { 'do': ':UpdateRemotePlugins' }
 Plug 'easymotion/vim-easymotion'
-Plug 'justinmk/vim-sneak'
+" Plug 'justinmk/vim-sneak'
 " Plug 'rhysd/clever-f.vim'
 " Plug 'hushicai/tagbar-javascript.vim'
+Plug 'ggandor/lightspeed.nvim'
 Plug 'godlygeek/tabular'
 Plug 'preservim/tagbar'
 " Plug 'Yggdroot/indentLine'
@@ -229,6 +246,7 @@ Plug 'vim-scripts/loremipsum'
 Plug 'wesQ3/vim-windowswap'
 " Plug 'weynhamz/vim-plugin-minibufexpl'
 Plug 'mildred/vim-bufmru'
+" Plug 'zefei/vim-wintabs' "This plugin allows per window management of buffers
 Plug 'akinsho/nvim-bufferline.lua'
 Plug 'unblevable/quick-scope'
 Plug 'Shatur/neovim-session-manager'
@@ -239,7 +257,8 @@ Plug 'eliba2/vim-node-inspect'
 Plug 'kyazdani42/nvim-web-devicons'
 " Plug 'kyazdani42/nvim-tree.lua'
 " Plug 'romgrk/barbar.nvim'
-" Plug 'zefei/vim-wintabs'
+"
+"
 "
 " fern things
 " Plug 'antoinemadec/FixCursorHold.nvim'
@@ -278,15 +297,24 @@ Plug 'ray-x/lsp_signature.nvim'
 "Close buffers
 Plug 'kazhala/close-buffers.nvim'
 " Plug 'gelguy/wilder.nvim'
+"
+" Search and replace in multiple files
+" Plug 'windwp/nvim-spectre'
+Plug 'brooth/far.vim'
 call plug#end()
 let g:indentLine_char_list = ['┊']
-
+"
+"session manager thingy
+let g:autoload_last_session=v:false
 "Wilder options
 " call wilder#enable_cmdline_enter()
 " set wildcharm=<Tab>
 " cmap <expr> <Tab> wilder#in_context() ? wilder#next() : "\<Tab>"
 " cmap <expr> <S-Tab> wilder#in_context() ? wilder#previous() : "\<S-Tab>"
 
+"lightspeed thingies
+nmap s <Plug>Lightspeed_s
+nmap S <Plug>Lightspeed_S
 " " only / and ? are enabled by default
 " call wilder#set_option('modes', ['/', '?', ':'])
 " call wilder#set_option('pipeline', [
@@ -442,10 +470,10 @@ nnoremap <space>n :noh<CR>
 " fzf window settings
 let g:fzf_layout = {'up':'~90%', 'window': { 'width': 0.8, 'height': 0.8,'yoffset':0.5,'xoffset': 0.5, 'highlight': 'Todo', 'border': 'sharp' } }
 "airline setting
-let g:airline#extensions#tabline#enabled = 0
-let g:airline_theme='base16_gruvbox_dark_hard'
+" let g:airline#extensions#tabline#enabled = 0
+" let g:airline_theme='base16_gruvbox_dark_hard'
 
-let g:gruvbox_contrast_dark = 'hard'
+" let g:gruvbox_contrast_dark = 'hard'
 " --- The Greatest plugin of all time.  I am not bias
 let g:vim_be_good_floating = 1
 nmap <F2> :TagbarToggle<CR>
@@ -471,8 +499,18 @@ let g:neoyank#save_registers = ['+','*']
 
 let g:wintabs_display='statusline'
 
-colorscheme gruvbox
+" colorscheme options
+let g:gruvqueen_transparent_background = v:true
+" let g:gruvqueen_background_color = '#3b3b3b'
+let g:gruvqueen_italic_comments = v:true
+let g:gruvqueen_italic_keywords = v:true
+let g:gruvqueen_italic_functions = v:true
+let g:gruvqueen_italic_variables = v:true
+let g:gruvqueen_invert_selection = v:true
+let g:gruvqueen_style = 'original'
 set background=dark
+colorscheme gruvqueen
+
 
 if executable('rg')
     let g:rg_derive_root='true'
@@ -749,13 +787,14 @@ nnoremap <Leader>9 :resize -5<CR>
 nnoremap <Leader>ee oif err != nil {<CR>log.Fatalf("%+v\n", err)<CR>}<CR><esc>kkI<esc>
 " nnoremap <C-b> :Buffers<CR>
 " Vim with me
-nnoremap <leader>vwm :colorscheme gruvbox<bar>:set background=dark<CR>
-nmap <leader>vtm :highlight Pmenu ctermbg=gray guibg=gray
+" nnoremap <leader>vwm :colorscheme gruvbox<bar>:set background=dark<CR>
+" nmap <leader>vtm :highlight Pmenu ctermbg=gray guibg=gray
 
 nnoremap x d
 vnoremap x d
 nnoremap xx dd
 vnoremap xx dd
+nnoremap X D
 
 inoremap <C-c> <esc>
 
@@ -813,7 +852,8 @@ noremap ydp :let @+=expand("%:p")<CR>
 " Tab and Shift-Tab in normal mode to navigate buffers
 :nmap <Tab> :BufMRUNext<CR>
 :nmap <S-Tab> :BufMRUPrev<CR>
-
+" :nmap <Tab> :WintabsNext<CR>
+" :nmap <S-Tab> :WintabsPrevious<CR>
 "Denite mappings because of neoyank
 " Define mappings
 let g:AutoPairsShortcutToggle = ''
@@ -900,10 +940,10 @@ autocmd VimEnter * :AddTabularPattern charAfterCommaSpace /, \zs/l0
 
 autocmd BufWritePre * :call TrimWhitespace()
 
-if !exists("g:GuiLoaded")
-  au ColorScheme * hi Normal ctermbg=none guibg=none
-  au ColorScheme myspecialcolors hi Normal ctermbg=red guibg=red
-endif
+" if !exists("g:GuiLoaded")
+"   au ColorScheme * hi Normal ctermbg=none guibg=none
+"   au ColorScheme myspecialcolors hi Normal ctermbg=red guibg=red
+" endif
 
 if exists("g:GuiLoaded")
   set guifont=Agave\ NF:h9
@@ -953,12 +993,15 @@ let g:UltiSnipsJumpForwardTrigger='<c-j>'
 " shortcut to go to previous position
 let g:UltiSnipsJumpBackwardTrigger='<c-k>'
 
-if exists('g:neoray')
+if exists('g:neoman')
   set guifont=Delugia:h9
-  let neoray_cursor_animation_time=0.07
-  let neoray_popup_menu_enabled=0
-  let neoray_window_startup_state='centered'
-  let neoray_key_toggle_fullscreen='<M-C-CR>' " AltGr+Enter
-  let neoray_key_increase_fontsize='<C-PageUp>'
-  let neoray_key_decrease_fontsize='<C-PageDown>'
+  let neoman_cursor_animation_time=0.1
+  let neoman_popup_menu_enabled=0
+  let neoman_window_startup_state='centered'
+  let neoman_key_toggle_fullscreen='<M-C-CR>' " AltGr+Enter
+  let neoman_key_increase_fontsize='<C-PageUp>'
+  let neoman_key_decrease_fontsize='<C-PageDown>'
+  autocmd vimenter * hi Normal guibg=#212121 ctermbg=NONE
+  autocmd vimenter * hi EndOfBuffer guibg=NONE ctermbg=NONE
 endif
+
