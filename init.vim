@@ -228,7 +228,7 @@ Plug 'tpope/vim-repeat'
 Plug 'svermeulen/vim-easyclip'
 Plug 'Shougo/neoyank.vim'
 " Plug 'Shougo/denite.nvim', { 'do': ':UpdateRemotePlugins' }
-Plug 'easymotion/vim-easymotion'
+" Plug 'easymotion/vim-easymotion'
 " Plug 'justinmk/vim-sneak'
 " Plug 'rhysd/clever-f.vim'
 " Plug 'hushicai/tagbar-javascript.vim'
@@ -407,8 +407,8 @@ nmap <C-s> :w<CR>
 " let g:floaterm_height = 0.8
 
 " <Leader>f{char} to move to {char}
-map  <Leader>f <Plug>(easymotion-bd-f)
-nmap <Leader>f <Plug>(easymotion-overwin-f)
+" map  <Leader>f <Plug>(easymotion-bd-f)
+" nmap <Leader>f <Plug>(easymotion-overwin-f)
 
 " s{char}{char} to move to {char}{char}
 " nmap s <Plug>(easymotion-overwin-f2)
@@ -417,12 +417,12 @@ nmap <Leader>f <Plug>(easymotion-overwin-f)
 
 " nnoremap cs S
 " Move to line
-map <Leader>L <Plug>(easymotion-bd-jk)
-nmap <Leader>L <Plug>(easymotion-overwin-line)
+" map <Leader>L <Plug>(easymotion-bd-jk)
+" nmap <Leader>L <Plug>(easymotion-overwin-line)
 
 " Move to word
-map  <Leader>w <Plug>(easymotion-bd-w)
-nmap <Leader>w <Plug>(easymotion-overwin-w)
+map  <Leader>w :HopWordAC<CR>
+map <Leader>W :HopWordBC<CR>
 "
 "icons
 " let g:vem_tabline_show_icon = 0
