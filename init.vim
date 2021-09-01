@@ -301,6 +301,8 @@ Plug 'kazhala/close-buffers.nvim'
 " Search and replace in multiple files
 " Plug 'windwp/nvim-spectre'
 Plug 'brooth/far.vim'
+
+Plug 'vhyrro/neorg', { 'branch': 'unstable' } | Plug 'nvim-lua/plenary.nvim'
 call plug#end()
 let g:indentLine_char_list = ['┊']
 "
@@ -960,6 +962,16 @@ endif
 
 
 lua << EOF
+local parser_configs = require('nvim-treesitter.parsers').get_parser_configs()
+
+parser_configs.norg = {
+  install_info = {
+      url = "https://github.com/vhyrro/tree-sitter-norg",
+      files = { "src/parser.c" },
+      branch = "main"
+  },
+}
+
 require'nvim-treesitter.configs'.setup {
   highlight = {
     enable = true,
@@ -984,7 +996,23 @@ require'nvim-treesitter.configs'.setup {
     disable = {"vue", "pug", "dartls"},
   },
 }
-print('Hello from lua')
+
+--Neorg
+--require('neorg').setup {
+  ---- Tell Neorg what modules to load
+  --load = {
+    --["core.defaults"] = {}, -- Load all the default modules
+    --["core.norg.concealer"] = {}, -- Allows for use of icons
+    --["core.norg.dirman"] = { -- Manage your directories with Neorg
+      --config = {
+        --workspaces = {
+          --my_workspace = "~/neorg"
+        --}
+      --}
+    --}
+  --},
+--}
+--print('Hello from lua')
 EOF
 
 let g:UltiSnipsExpandTrigger='<c-l>'
@@ -1001,6 +1029,12 @@ if exists('g:neoman')
   let neoman_key_toggle_fullscreen='<M-C-CR>' " AltGr+Enter
   let neoman_key_increase_fontsize='<C-PageUp>'
   let neoman_key_decrease_fontsize='<C-PageDown>'
+  autocmd vimenter * hi Normal guibg=#212121 ctermbg=NONE
+  autocmd vimenter * hi EndOfBuffer guibg=NONE ctermbg=NONE
+endif
+
+if exists('g:nvui')
+  set guifont=Delugia:h9
   autocmd vimenter * hi Normal guibg=#212121 ctermbg=NONE
   autocmd vimenter * hi EndOfBuffer guibg=NONE ctermbg=NONE
 endif
